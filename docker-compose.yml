@@ -1,12 +1,5 @@
 # to run: docker-compose run
 #
-# Create a .env file in the same folder as this file and change the variables.
-# MOUNT_POINT=/tmp/
-# VPN_PROVIDER=changeme
-# VPN_CONFIG=changeme
-# VPN_USERNAME=changeme
-# VPN_PASSWORD=changeme
-#
 #
 version: "2"
 
@@ -17,66 +10,60 @@ services:
     restart: always
     ports:
       - "9091:9091"
-    networks:
-      - plexnet
+    network_mode: "host"
     environment:
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
-      - OPENVPN_CONFIG=${VPN_CONFIG}
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
-      - OPENVPN_OPTS="--inactive 3600 --ping 10 --ping-exit 60"
     volumes:
       - ${MOUNT_POINT}/transmission:/data
-      - /etc/localtime:/etc/localtime:ro
+      - ${MOUNT_POINT}/transmission/watch:/data/watch
   radarr:
     image: linuxserver/radarr
     container_name: radarr
     restart: always
     ports:
       - "7878:7878"
-    networks:
-      - plexnet
+    network_mode: "host"
     environment:
-      - PGID=1000
-      - PUID=1000
-      - TZ=Europe/London
+      - PGID=${USER_PGID}
+      - PUID=${USER_PUID}
+      - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/radarr-config:/config
-      - ${MOUNT_POINT}/transmission/completed:/downloads
+      - ${MOUNT_POINT}/radarr:/config
       - ${MOUNT_POINT}/plex/movies:/movies
+      - ${MOUNT_POINT}/transmission/completed:/downloads
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
     restart: always
     ports:
       - "8989:8989"
-    networks:
-      - plexnet
+    network_mode: "host"
     environment:
-      - PGID=1000
-      - PUID=1000
-      - TZ=Europe/London
+      - PGID=${USER_PGID}
+      - PUID=${USER_PUID}
+      - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/sonarr/config:/config
+      - ${MOUNT_POINT}/sonarr:/config
       - ${MOUNT_POINT}/plex/tv:/tv
       - ${MOUNT_POINT}/transmission/completed:/downloads
   jackett:
     image: linuxserver/jackett
     container_name: jackett
     restart: always
-    networks:
-      - plexnet
+    network_mode: "host"
     environment:
-      - PGID=1000
-      - PUID=1000
-      - TZ=Europe/London
+      - PGID=${USER_PGID}
+      - PUID=${USER_PUID}
+      - TZ=${TZ_LOCAL}
     volumes:
       - ${MOUNT_POINT}/jackett/config:/config
-      - ${MOUNT_POINT}/jackett/downloads:/downloads
+      - ${MOUNT_POINT}/transmission/watch:/downloads
     ports:
       - "9117:9117"
   plex:
-    image: timhaak/plex
+    image: linuxserver/plex
     container_name: plex
     restart: always
     ports:
@@ -90,15 +77,12 @@ services:
       - "32413:32413"
       - "32414:32414"
       - "32469:32469"
-    networks:
-      - plexnet
+    network_mode: "host"
     environment:
-      - PGID=1000
-      - PUID=1000
-      - TZ=Europe/London
+      - PGID=${USER_PGID}
+      - PUID=${USER_PUID}
+      - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/plex-config:/config
-      - ${MOUNT_POINT}/plex:/data
-networks:
-  plexnet:
-    driver: bridge
+      - ${MOUNT_POINT}/plex/tv:/tv
+      - ${MOUNT_POINT}/plex/movies:/movies
+      - ${MOUNT_POINT}/plex/plex-config:/config
