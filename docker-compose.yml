@@ -17,7 +17,6 @@ services:
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
     volumes:
       - ${MOUNT_POINT}/transmission:/data
-      - ${MOUNT_POINT}/transmission/watch:/data/watch
   radarr:
     image: linuxserver/radarr
     container_name: radarr
