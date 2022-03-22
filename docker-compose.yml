@@ -16,8 +16,8 @@ services:
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
     volumes:
-      - ./media/transmission/config:/config
-      - ./media/transmission/downloads:/downloads
+      - /media/transmission/config:/config
+      - /media/transmission/downloads:/downloads
 
   radarr:
     image: linuxserver/radarr
@@ -29,9 +29,9 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ./media/radarr/config:/config
-      - ./media/radarr/movies:/movies
-      - ./media/transmission/downloads:/downloads
+      - /media/radarr/config:/config
+      - /media/radarr/movies:/movies
+      - /media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -45,9 +45,9 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ./media/sonarr/config:/config
-      - ./media/sonarr/series:/tv
-      - ./media/transmission/downloads:/downloads
+      - /media/sonarr/config:/config
+      - /media/sonarr/series:/tv
+      - /media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -61,8 +61,8 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ./media/jackett/config:/config
-      - ./media/transmission/downloads:/downloads
+      - /media/jackett/config:/config
+      - /media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -76,9 +76,9 @@ services:
       - PLEX_GID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ./media/radarr/movies:/data/movies
-      - ./media/sonarr/series:/data/tvshows
-      - ./media/plex/config:/config
+      - /media/radarr/movies:/data/movies
+      - /media/sonarr/series:/data/tvshows
+      - /media/plex/config:/config
       - /tmp/transcode:/transcode
     depends_on:
       - transmission
