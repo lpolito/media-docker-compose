@@ -33,7 +33,7 @@ services:
       - ./media/radarr/movies:/movies
       - ./media/transmission/downloads:/downloads
     depends_on:
-      - transmission-openvpn
+      - transmission
 
   sonarr:
     image: linuxserver/sonarr
@@ -49,7 +49,7 @@ services:
       - ./media/sonarr/series:/tv
       - ./media/transmission/downloads:/downloads
     depends_on:
-      - transmission-openvpn
+      - transmission
 
   jackett:
     image: linuxserver/jackett
@@ -64,7 +64,7 @@ services:
       - ./media/jackett/config:/config
       - ./media/transmission/downloads:/downloads
     depends_on:
-      - transmission-openvpn
+      - transmission
 
   plex:
     image: linuxserver/plex
@@ -81,6 +81,6 @@ services:
       - ./media/plex/config/:/config
       - /tmp/transcode/:/transcode
     depends_on:
-      - transmission-openvpn
+      - transmission
       - sonarr
       - radarr
