@@ -17,7 +17,7 @@ services:
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
     volumes:
       - ./media/transmission/config:/config
-      - downloads:/downloads
+      - ./media/transmission/downloads:/downloads
 
   radarr:
     image: linuxserver/radarr
@@ -31,7 +31,7 @@ services:
     volumes:
       - ./media/radarr/config:/config
       - ./media/radarr/movies:/movies
-      - downloads:/downloads
+      - ./media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -47,7 +47,7 @@ services:
     volumes:
       - ./media/sonarr/config:/config
       - ./media/sonarr/series:/tv
-      - downloads:/downloads
+      - ./media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -62,7 +62,7 @@ services:
       - TZ=${TZ_LOCAL}
     volumes:
       - ./media/jackett/config:/config
-      - downloads:/downloads
+      - ./media/transmission/downloads:/downloads
     depends_on:
       - transmission
 
@@ -84,8 +84,3 @@ services:
       - transmission
       - sonarr
       - radarr
-      
-volumes:
-  downloads:
-    external: false
-    name: ./media/transmission/downloads
