@@ -16,8 +16,8 @@ services:
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
     volumes:
-      - ./media/transmission/config/:/config
-      - ./media/transmission/downloads/:/downloads
+      - ./media/transmission/config:/config
+      - ./media/transmission/downloads:/downloads
 
   radarr:
     image: linuxserver/radarr
@@ -78,8 +78,8 @@ services:
     volumes:
       - ./media/radarr/movies:/data/movies
       - ./media/sonarr/series:/data/tvshows
-      - ./media/plex/config/:/config
-      - /tmp/transcode/:/transcode
+      - ./media/plex/config:/config
+      - /tmp/transcode:/transcode
     depends_on:
       - transmission
       - sonarr
