@@ -8,8 +8,7 @@ services:
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
     restart: always
-    networks:
-      - web
+    network_mode: "host"
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -24,8 +23,7 @@ services:
     image: linuxserver/radarr
     container_name: radarr
     restart: always
-    networks:
-      - web
+    network_mode: "host"
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -41,8 +39,7 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     restart: always
-    networks:
-      - web
+    network_mode: "host"
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -58,8 +55,7 @@ services:
     image: linuxserver/jackett
     container_name: jackett
     restart: always
-    networks:
-      - web
+    network_mode: "host"
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -74,8 +70,7 @@ services:
     image: linuxserver/plex
     container_name: plex
     restart: always
-    networks:
-      - web
+    network_mode: "host"
     environment:
       - PLEX_UID=${USER_ID}
       - PLEX_GID=${GROUP_ID}
@@ -89,7 +84,3 @@ services:
       - transmission-openvpn
       - sonarr
       - radarr
-
-networks:
-  web:
-    external: true
