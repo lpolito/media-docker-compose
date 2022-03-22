@@ -8,80 +8,88 @@ services:
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
     restart: always
-    ports:
-      - "9091:9091"
-    network_mode: "host"
+    networks:
+      - web
     environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
     volumes:
-      - ${MOUNT_POINT}/transmission:/data
+      - ./media/transmission/config/:/config
+      - ./media/transmission/downloads/:/downloads
+
   radarr:
     image: linuxserver/radarr
     container_name: radarr
     restart: always
-    ports:
-      - "7878:7878"
-    network_mode: "host"
+    networks:
+      - web
     environment:
-      - PGID=${USER_PGID}
-      - PUID=${USER_PUID}
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/radarr:/config
-      - ${MOUNT_POINT}/plex/movies:/movies
-      - ${MOUNT_POINT}/transmission/completed:/downloads
+      - ./media/radarr/config:/config
+      - ./media/radarr/movies:/movies
+      - ./media/transmission/downloads:/downloads
+    depends_on:
+      - transmission-openvpn
+
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
     restart: always
-    ports:
-      - "8989:8989"
-    network_mode: "host"
+    networks:
+      - web
     environment:
-      - PGID=${USER_PGID}
-      - PUID=${USER_PUID}
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/sonarr:/config
-      - ${MOUNT_POINT}/plex/tv:/tv
-      - ${MOUNT_POINT}/transmission/completed:/downloads
+      - ./media/sonarr/config:/config
+      - ./media/sonarr/series:/tv
+      - ./media/transmission/downloads:/downloads
+    depends_on:
+      - transmission-openvpn
+
   jackett:
     image: linuxserver/jackett
     container_name: jackett
     restart: always
-    network_mode: "host"
+    networks:
+      - web
     environment:
-      - PGID=${USER_PGID}
-      - PUID=${USER_PUID}
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/jackett/config:/config
-      - ${MOUNT_POINT}/transmission/watch:/downloads
-    ports:
-      - "9117:9117"
+      - ./media/jackett/config:/config
+      - ./media/transmission/downloads:/downloads
+    depends_on:
+      - transmission-openvpn
+
   plex:
     image: linuxserver/plex
     container_name: plex
     restart: always
-    ports:
-      - "32400:32400"
-      - "1900:1900"
-      - "3005:3005"
-      - "5353:5353"
-      - "8324:8324"
-      - "32410:32410"
-      - "32412:32412"
-      - "32413:32413"
-      - "32414:32414"
-      - "32469:32469"
-    network_mode: "host"
+    networks:
+      - web
     environment:
-      - PGID=${USER_PGID}
-      - PUID=${USER_PUID}
+      - PLEX_UID=${USER_ID}
+      - PLEX_GID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ${MOUNT_POINT}/plex/tv:/tv
-      - ${MOUNT_POINT}/plex/movies:/movies
-      - ${MOUNT_POINT}/plex/plex-config:/config
+      - ./media/radarr/movies:/data/movies
+      - ./media/sonarr/series:/data/tvshows
+      - ./media/plex/config/:/config
+      - /tmp/transcode/:/transcode
+    depends_on:
+      - transmission-openvpn
+      - sonarr
+      - radarr
+
+networks:
+  web:
+    external: true
