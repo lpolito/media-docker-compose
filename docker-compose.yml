@@ -16,6 +16,8 @@ services:
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - CREATE_TUN_DEVICE=true
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./media/transmission/config:/config
