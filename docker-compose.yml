@@ -1,23 +1,39 @@
 # docker-compose up -d
 #
 #
-version: "2.1"
+version: "2.2"
 
 services:
   transmission:
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
     restart: unless-stopped
-    network_mode: "host"
+    ports:
+      - "9091:9091"
+      - "8888:8888"
     environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.0.0/24
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./media/transmission/config:/config
       - ./media/transmission/downloads:/downloads
+
+  proxy:
+    image: haugene/transmission-openvpn-proxy
+    links:
+      - transmission
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   radarr:
     image: linuxserver/radarr
