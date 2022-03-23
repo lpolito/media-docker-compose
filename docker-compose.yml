@@ -9,18 +9,15 @@ services:
     container_name: transmission-openvpn
     cap_add:
       - NET_ADMIN
-    devices:
-      - /dev/net/tun
     restart: unless-stopped
-    ports:
-      - "9091:9091"
-      - "8888:8888"
+    network_mode: host
     environment:
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
       - LOCAL_NETWORK=192.168.0.0/24
+      - CREATE_TUN_DEVICE=true
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./media/transmission/config:/config
@@ -30,7 +27,7 @@ services:
     image: linuxserver/radarr
     container_name: radarr
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -46,7 +43,7 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -62,11 +59,12 @@ services:
     image: linuxserver/jackett
     container_name: jackett
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
+      - AUTO_UPDATE=true
     volumes:
       - ./media/jackett/config:/config
       - ./media/transmission/downloads:/downloads
@@ -76,8 +74,10 @@ services:
   plex:
     image: linuxserver/plex
     container_name: plex
+    devices:
+      - /dev/dri:/dev/dri
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
