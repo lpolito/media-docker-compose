@@ -79,7 +79,7 @@ services:
       - ./media/radarr/movies:/movies
       - ./media/sonarr/series:/tv
       - ./media/plex/config:/config
-      - /tmp/transcode:/transcode
+      - ./tmp/transcode:/transcode
     depends_on:
       - transmission
       - sonarr
