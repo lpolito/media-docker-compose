@@ -10,7 +10,8 @@ services:
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - '9091:9091'
     environment:
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
       - OPENVPN_USERNAME=${VPN_USERNAME}
@@ -27,7 +28,8 @@ services:
     image: linuxserver/radarr
     container_name: radarr
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 7878:7878
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -43,7 +45,8 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 8989:8989
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
@@ -59,7 +62,8 @@ services:
     image: linuxserver/jackett
     container_name: jackett
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 9117:9117
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
