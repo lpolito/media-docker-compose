@@ -26,15 +26,6 @@ services:
       - ./media/transmission/config:/config
       - ./media/transmission/downloads:/downloads
 
-  proxy:
-    image: haugene/transmission-openvpn-proxy
-    links:
-      - transmission
-    ports:
-      - 8080:8080
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-
   radarr:
     image: linuxserver/radarr
     container_name: radarr
