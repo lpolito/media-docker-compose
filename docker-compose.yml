@@ -20,9 +20,9 @@ services:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
+      - ./media/transmission/data:/data
       - ./media/transmission/config:/config
-      - ./media/data/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro 
 
   radarr:
     image: linuxserver/radarr
@@ -36,8 +36,8 @@ services:
       - TZ=${TZ_LOCAL}
     volumes:
       - ./media/radarr/config:/config
-      - ./media/radarr/movies:/movies
-      - ./media/data:/data
+      - ./media/transmission/data/completed:/downloads
+      - ./media/plex/data/movies:/movies
     depends_on:
       - transmission
 
@@ -53,8 +53,8 @@ services:
       - TZ=${TZ_LOCAL}
     volumes:
       - ./media/sonarr/config:/config
-      - ./media/sonarr/series:/tv
-      - ./media/data:/data
+      - ./media/transmission/data/completed:/downloads
+      - ./media/plex/data/tv:/tv
     depends_on:
       - transmission
 
@@ -86,9 +86,8 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ./media/radarr/movies:/movies
-      - ./media/sonarr/series:/tv
       - ./media/plex/config:/config
+      - ./media/plex/data:/data
       - /tmp/transcode:/transcode
     depends_on:
       - transmission
