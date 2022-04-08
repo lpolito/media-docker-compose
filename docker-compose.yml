@@ -1,5 +1,9 @@
 # docker-compose up -d
 #
+# update images + deploy:
+# docker-compose up --force-recreate --build -d
+# docker image prune -f
+#
 # mkdir -p DATA_STORAGE_DIR/{torrents,media/{tv,movies}}
 # mkdir -p DOCKER_STORAGE_DIR/{radarr,sonarr,prowlarr,plex,transmission}
 #
@@ -30,7 +34,7 @@ services:
       - ${DOCKER_STORAGE_DIR}/transmission:/config
 
   prowlarr:
-    image: linuxserver/prowlarr
+    image: linuxserver/prowlarr:develop
     container_name: prowlarr
     restart: unless-stopped
     ports:
