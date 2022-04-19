@@ -25,13 +25,15 @@ services:
       - OPENVPN_PROVIDER=${VPN_PROVIDER}
       - OPENVPN_USERNAME=${VPN_USERNAME}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
+      - TRANSMISSION_DOWNLOAD_DIR=/data/torrents
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - CREATE_TUN_DEVICE=true
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${DATA_STORAGE_DIR}/torrents:/data
-      - ${DOCKER_STORAGE_DIR}/transmission:/config
+      - ${DATA_STORAGE_DIR}/torrents:/data/torrents
+      - ${DOCKER_STORAGE_DIR}/transmission:/data/transmission-home
 
   prowlarr:
     image: linuxserver/prowlarr:develop
