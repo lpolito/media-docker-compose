@@ -1,7 +1,8 @@
 # docker-compose up -d
 #
 # update images + deploy:
-# docker-compose up --force-recreate --build -d
+# docker-compose pull
+# docker-compose up -d --remove-orphans
 # docker image prune -f
 #
 # mkdir -p DATA_STORAGE_DIR/{torrents,media/{tv,movies}}
