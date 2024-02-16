@@ -6,7 +6,7 @@
 # docker image prune -f
 #
 # mkdir -p DATA_STORAGE_DIR/{torrents,media/{tv,movies}}
-# mkdir -p DOCKER_STORAGE_DIR/{radarr,sonarr,prowlarr,plex,transmission}
+# mkdir -p DOCKER_STORAGE_DIR/{radarr,sonarr,prowlarr,plex,transmission,ombi}
 # mkdir /tmp/transcode
 #
 # sudo chown -R dockermedia:users DATA_STORAGE_DIR DOCKER_STORAGE_DIR
@@ -14,7 +14,7 @@
 # sudo chown -R dockermedia:users /tmp/transcode
 # sudo chmod -R a=,a+rX,u+w,g+w /tmp/transcode
 # 
-version: "3.0"
+version: "3.1"
 
 services:
   transmission:
@@ -89,6 +89,23 @@ services:
     depends_on:
       - transmission
       - prowlarr
+
+  ombi:
+    image: lscr.io/linuxserver/ombi:latest
+    container_name: ombi
+    restart: unless-stopped
+    ports:
+      - 3579:3579
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TZ_LOCAL}
+      - BASE_URL=/ombi #optional
+    volumes:
+      - ${DOCKER_STORAGE_DIR}/ombi:/config
+    depends_on:
+      - sonarr
+      - radarr
 
   plex:
     image: linuxserver/plex
