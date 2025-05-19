@@ -6,7 +6,7 @@
 # docker image prune -f
 #
 # mkdir -p DATA_STORAGE_DIR/{torrents,media/{tv,movies}}
-# mkdir -p DOCKER_STORAGE_DIR/{radarr,sonarr,prowlarr,plex,transmission,ombi}
+# mkdir -p DOCKER_STORAGE_DIR/{radarr,sonarr,prowlarr,plex,transmission,ombi,rdtclient}
 # mkdir /tmp/transcode
 #
 # sudo chown -R dockermedia:users DATA_STORAGE_DIR DOCKER_STORAGE_DIR
@@ -38,6 +38,26 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_STORAGE_DIR}/torrents:/data/torrents
       - ${DOCKER_STORAGE_DIR}/transmission:/data/transmission-home
+
+  rdtclient:
+    image: rogerfar/rdtclient
+    container_name: rdtclient
+    restart: unless-stopped
+    ports:
+      - 6500:6500
+    logging:
+       driver: json-file
+       options:
+          max-size: 10m
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TZ_LOCAL}
+    volumes:
+      - ${DATA_STORAGE_DIR}/rdtclient:/data/db
+      - ${DATA_STORAGE_DIR}/torrents:/data/downloads
+    depends_on:
+      - transmission
 
   prowlarr:
     image: linuxserver/prowlarr:develop
