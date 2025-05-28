@@ -54,7 +54,7 @@ services:
       - PGID=${GROUP_ID}
       - TZ=${TZ_LOCAL}
     volumes:
-      - ${DATA_STORAGE_DIR}/rdtclient:/data/db
+      - ${DOCKER_STORAGE_DIR}/rdtclient:/data/db
       - ${DATA_STORAGE_DIR}/torrents:/data/downloads
     depends_on:
       - transmission
